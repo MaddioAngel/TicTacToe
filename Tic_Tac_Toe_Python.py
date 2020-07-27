@@ -1,17 +1,15 @@
 import pygame
- 
+pygame.init()
 # Define some colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
  
-pygame.init()
- 
 # Set the width and height of the screen [width, height]
 width = 700
 height = 500
-gap = 25
+gap = 50
 
 size = (width, height)
 
@@ -29,21 +27,24 @@ second_line_side_h = int(height*(2/3))
 
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Tic Tac Toe")
+
 guess = [
             ["","",""],
             ["","",""],
             ["","",""]
 ]
 
+font = pygame.font.SysFont("comicsansms", 50)
+X_WINS = 0
+O_WINS = 0
 
 def game():
     # Loop until the user clicks the close button.
+    print(X_WINS)
     done = False
     turn = 0
-
     while not done:
         board()
-        # circle is first
         game = True
         while(game):
             for event in pygame.event.get():
@@ -52,7 +53,6 @@ def game():
                     game = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = pygame.mouse.get_pos()     
-         
                     if (turn == 0):
                         if (check_board(x,y, turn)):
                             draw_circle(x,y)
@@ -68,12 +68,10 @@ def game():
                             print("Can't play there")
                             print(guess)
                     if(check_win(guess)):
-                        win() 
+                        clear_game()
                                            
     # Close the window and quit.
     pygame.quit()
-
-
 
 def board():
     screen.fill(WHITE)
@@ -82,6 +80,12 @@ def board():
 
     pygame.draw.line(screen, BLACK, [first_line_side_w, first_line_side_h], [width - first_line_side_w, first_line_side_h], 5)
     pygame.draw.line(screen, BLACK, [second_line_side_w, second_line_side_h], [width - second_line_side_w, second_line_side_h], 5)
+
+    x_wins = font.render("X: "+ str(X_WINS), 1, (0,0,0))
+    o_wins = font.render("O: "+ str(O_WINS), 1, (0,0,0))
+    screen.blit(x_wins, (0, 0))
+    screen.blit(o_wins, (100, 0))
+    
     pygame.display.flip()
 
 def check_board(x,y, turn):
@@ -129,11 +133,11 @@ def draw_circle(x,y):
 
     center_x = int(first_line_up_w * (i + 0.5))
     center_y = int(first_line_side_h * (j + 0.5))
-    pygame.draw.circle(screen, RED, (center_x, center_y), 75, 7)
+    pygame.draw.circle(screen, RED, (center_x, center_y), 50, 7)
     pygame.display.flip()
 
 def draw_cross(x,y):
-    length_of_cross = 100
+    length_of_cross = 75
 
     if (x < first_line_up_w):
         i = 0
@@ -169,12 +173,16 @@ def cat_scam():
         return True
 
 def check_win(guess):
+    global O_WINS
+    global X_WINS
     if(check_O()):
         print("Win for O")
         print(check_O())
+        O_WINS = O_WINS + 1
         return True
     if(check_X()):
         print("Win for X")
+        X_WINS = X_WINS + 1
         return True
     if(cat_scam()):
         print("Game Over")
@@ -235,8 +243,6 @@ def check_O():
     else:
         return False
 
-def win():
-    clear_game()
 
 def clear_game():
     print(guess[0])
