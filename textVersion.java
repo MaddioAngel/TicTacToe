@@ -1,4 +1,5 @@
-import java.util.*;  
+package TicTacToe;
+import java.util.*;
 public class textVersion{
 
     static Character[][] board = new Character[3][3];
